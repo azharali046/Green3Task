@@ -47,13 +47,13 @@ class CreateBook(BaseModel):
     def author_id_must_be_integer(cls, v):
         if not type(v) == int:
             raise ValueError('author id must be an integer value')
-        return v.title()
+        return v
 
     @validator('author_id')
     def author_id_must_not_be_empty(cls, v):
         if v is None:
             raise ValueError('author id must not be empty')
-        return v.title()
+        return v
 
     @validator('name')
     def name_not_be_empty(cls, v):
@@ -76,13 +76,13 @@ class UpdateBook(BaseModel):
     def author_id_must_be_integer(cls, v):
         if not type(v) == int:
             raise ValueError('author id must be an integer value')
-        return v.title()
+        return v
 
     @validator('author_id')
     def author_id_must_not_be_empty(cls, v):
         if v is None:
             raise ValueError('author id must not be empty')
-        return v.title()
+        return v
 
     @validator('name')
     def name_not_be_empty(cls, v):

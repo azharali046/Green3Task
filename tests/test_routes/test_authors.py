@@ -2,7 +2,7 @@ from tests.config_test import client
 from fastapi import status
 
 create_author = {
-    "name": "Azhar Ali"
+    "name": "Asad Ali"
 }
 
 update_author = {

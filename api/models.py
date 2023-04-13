@@ -13,7 +13,7 @@ class Author(Base):
     """
     __tablename__ = "author"
     id = Column(Integer, primary_key=True)
-    name = Column(String(200), nullable=True, unique=True, index=True)
+    name = Column(String(200), nullable=True)
 
     def toDict(self):
         """

@@ -152,7 +152,7 @@ def update_book_by_id(db, id, name, author_id):
     if book_status == 200:
         db.query(Book).filter(Book.id == id).update({
             "name": name,
-            "author_id": author_id if get_author_by_id(db, author_id)[1] == 200 else None
+            "author_id": author_id
         })
         db.commit()
         return update_book_msg, 200
