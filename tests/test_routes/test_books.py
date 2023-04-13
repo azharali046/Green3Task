@@ -30,6 +30,7 @@ def test_get_book_by_author_id():
 def test_get_book_by_id():
     response = client.get('/books/{}'.format(book_id))
     assert response.status_code == status.HTTP_200_OK
+    assert response.json()['data']['id'] == book_id
 
 
 def test_update_book():

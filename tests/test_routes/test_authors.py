@@ -23,6 +23,7 @@ def test_create_author():
 def test_get_author_by_id():
     response = client.get('/authors/{}'.format(author_id))
     assert response.status_code == status.HTTP_200_OK
+    assert response.json()['data']['id'] == author_id
 
 
 def test_update_author():

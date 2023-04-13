@@ -52,6 +52,8 @@ def fetch_authors_by_id(response: Response, id: int, db: Session = Depends(get_d
 
     """
     authors_data, status_code, = get_author_by_id(db=db, id=id)
+    response_body['message'] = ''
+    response_body['data'] = jsonable_encoder(authors_data)
     response.status_code = status_code
     return JSONResponse(content=response_body, status_code=response.status_code)
 
