@@ -1,14 +1,10 @@
-from typing import Optional
-
-from fastapi import APIRouter, Response, Depends, HTTPException
+from fastapi import APIRouter, Response, Depends
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
-
+from api.author.schemas import CreateAuthor, UpdateAuthor
+from api.author.utils import save_author, get_authors, get_author_by_id, update_author_by_id, delete_author_by_id
 from api.constants import response_body
-from api.schemas import CreateAuthor, UpdateAuthor
-from api.utils import get_authors, save_author, get_author_by_id, update_author_by_id, \
-    delete_author_by_id
 from database_dependency import get_db
 
 router = APIRouter()

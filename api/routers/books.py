@@ -5,8 +5,8 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from starlette.responses import JSONResponse
 from api.constants import response_body
-from api.schemas import CreateBook, UpdateBook
-from api.utils import save_book, get_books, get_book_by_id, update_book_by_id, delete_book_by_id
+from api.book.schemas import CreateBook, UpdateBook
+from api.book.utils import save_book, get_books, get_book_by_id, update_book_by_id, delete_book_by_id
 from database_dependency import get_db
 
 router = APIRouter()
@@ -20,7 +20,7 @@ def create_book(response: Response, book_schema: CreateBook, db: Session = Depen
        - **201**: Successfully created
        - **422**: Validation Error
     """
-    message = save_book(db=db, name=book_schema.name, author_id=book_schema.author_id)
+    message, status_code = save_book(db=db, name=book_schema.name, author_id=book_schema.author_id)
     response_body['message'] = message
     response_body['data'] = []
     response.status_code = 201
