@@ -1,6 +1,6 @@
 
 from api.constants import save_author_msg, no_record_found, update_author_msg, delete_author_msg, save_book_msg
-from api.book.models import Author
+from api.book.models import Author, Book
 
 
 def get_authors(db):
@@ -59,9 +59,12 @@ def update_author_by_id(db, id, name):
             "name": name
         })
         db.commit()
-        return update_author_msg, 200
+        message = update_author_msg
+        status_code = 200
     else:
-        return no_record_found, 404
+        message = no_record_found
+        status_code = 404
+    return message, status_code
 
 
 def delete_author_by_id(db, id):
@@ -76,9 +79,17 @@ def delete_author_by_id(db, id):
     """
     author_status = get_author_by_id(db=db, id=id)[1]
     if author_status == 200:
-        db.query(Author).filter(Author.id == id).delete()
+        author_obj = db.query(Author).filter(Author.id == id).first()
+        db.delete(author_obj)
+        """
+        Delete All the references of this author id in book table
+        """
+        db.query(Book).filter(Book.author_id == id).delete()
         db.commit()
-        return delete_author_msg, 200
+        message = delete_author_msg
+        status_code = 200
     else:
-        return no_record_found, 404
+        message = no_record_found
+        status_code = 404
+    return message, status_code
 

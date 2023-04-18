@@ -18,20 +18,28 @@ def save_book(db, name, author_id):
     first check author validation either author exist or not
     """
     author_status = get_author_by_id(db=db, id=author_id)[1]
-    if author_status == 200:
-        book_obj = Book(name=name, author_id=author_id)
-        db.add(book_obj)
-        try:
-            db.commit()
-            message = save_book_msg
-            status_code = 201
-        except IntegrityError:
-            db.rollback()
-            message = save_book_failure_msg.format(name)
-            status_code = 409
+    """
+        check the name is unique
+        """
+    name_count = get_book_by_name_count(db=db, name=name)
+    if name_count > 0:
+        message = save_book_failure_msg.format(name)
+        status_code = 409
     else:
-        message = author_not_exist
-        status_code = 404
+        if author_status == 200:
+            book_obj = Book(name=name, author_id=author_id)
+            db.add(book_obj)
+            try:
+                db.commit()
+                message = save_book_msg
+                status_code = 201
+            except IntegrityError:
+                db.rollback()
+                message = save_book_failure_msg.format(name)
+                status_code = 409
+        else:
+            message = author_not_exist
+            status_code = 404
 
     return message, status_code
 
@@ -76,15 +84,28 @@ def update_book_by_id(db, id, name, author_id):
     first check book exist against provided id
     """
     book_status = get_book_by_id(db=db, id=id)[1]
-    if book_status == 200:
-        db.query(Book).filter(Book.id == id).update({
-            "name": name,
-            "author_id": author_id
-        })
-        db.commit()
-        return update_book_msg, 200
+    """
+    check the name is unique
+    """
+    name_count = get_book_by_name_count(db=db, name=name)
+    if name_count > 0:
+        message = save_book_failure_msg.format(name)
+        status_code = 409
     else:
-        return no_record_found, 404
+        if book_status == 200:
+
+            db.query(Book).filter(Book.id == id).update({
+                "name": name,
+                "author_id": author_id
+            })
+            db.commit()
+            message = update_book_msg
+            status_code = 409
+
+        else:
+            message =  no_record_found
+            status_code = 404
+    return message, status_code
 
 
 def delete_book_by_id(db, id):
@@ -101,6 +122,21 @@ def delete_book_by_id(db, id):
     if book_status == 200:
         db.query(Book).filter(Book.id == id).delete()
         db.commit()
-        return delete_book_msg, 200
+        message = delete_book_msg
+        status_code = 200
+
     else:
-        return no_record_found, 404
+        message = no_record_found
+        status_code = 404
+    return message, status_code
+
+
+def get_book_by_name_count(db, name):
+    """
+
+    :param db:
+    :param name:
+    :return:
+    """
+
+    return db.query(Book).filter(Book.name == name).count()
